@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	:root {
+		--background: #fefae0;
+		--foreground: #2a2a2a;
+
+		--border: #000;
+	}
+
+	html,
+	body {
+		@apply bg-background text-foreground border-border;
+	}
+}

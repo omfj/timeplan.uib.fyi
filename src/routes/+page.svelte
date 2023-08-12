@@ -1,53 +1,33 @@
 <script lang="ts">
-	import { user } from '$lib/stores/user';
+	import { enhance } from '$app/forms';
+	import { error } from '@sveltejs/kit';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 </script>
 
-<div class="space-y-4">
-	<h1 class="text-3xl">Welcome to SimpleSvelte</h1>
+<svelte:head>
+	<title>Timeplan</title>
+</svelte:head>
 
-	<div>
-		{#if $user}
-			<p>You are logged in as {$user.username}</p>
-		{:else}
-			<p>You are not logged in</p>
+<div class="space-y-4 py-10">
+	<form class="flex flex-col gap-4" method="post" use:enhance>
+		{#if form?.error}
+			<p class="text-center text-red-500">
+				{form.error}
+			</p>
 		{/if}
-	</div>
 
-	<p>
-		SimpleSvelte is a simple SvelteKit template that includes a few features that are common to most
-		web applications.
-	</p>
+		<input
+			class="text-6xl text-center rounded-full border-2 border-black uppercase placeholder:capitalize py-3"
+			type="text"
+			name="code"
+			placeholder="Emnekode..."
+		/>
 
-	<ul class="list-disc ml-5">
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://tailwindcss.com/"
-				>Tailwind CSS</a
-			> for styling
-		</li>
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://orm.drizzle.team/"
-				>Drizzle ORM</a
-			> for database access
-		</li>
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://svelte.dev/">Svelte</a> for
-			the frontend
-		</li>
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://kit.svelte.dev/"
-				>SvelteKit</a
-			>
-			for the backend
-		</li>
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://www.typescriptlang.org/"
-				>TypeScript</a
-			> for type-safety
-		</li>
-		<li>
-			<a class="text-blue-500 hover:no-underline underline" href="https://superforms.rocks/"
-				>SuperForm</a
-			> for form handling
-		</li>
-	</ul>
+		<button
+			class="bg-white border-black font-black border-2 rounded-full w-fit mx-auto py-3 px-8 hover:bg-gray-100"
+			>Gå til emne</button
+		>
+	</form>
 </div>
