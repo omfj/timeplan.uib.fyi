@@ -27,17 +27,19 @@ export const actions = {
 
 		const { username, email, password } = form.data;
 
-		const userId = await createUser(email, username, password);
+		const { userId, error } = await createUser(email, username, password);
 
-		if (!userId) {
-			setError(form, 'username', 'Username or email already taken');
-			setError(form, 'email', 'Username or email already taken');
+		if (error) {
+			setError(form, 'username', error);
+			setError(form, 'email', error);
 			return fail(400, {
 				form
 			});
 		}
 
 		const sessionId = await createSession(userId, new Date(Date.now() + DEFAULT_SESSION_LENGTH));
+
+		console.log('SESSION ID', sessionId);
 
 		cookies.set('session', sessionId);
 

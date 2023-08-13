@@ -15,30 +15,38 @@ export const createUser = async (
 	email: User['email'],
 	username: User['username'],
 	password: User['password']
-): Promise<User['id'] | undefined> => {
-	const existingUser = await db.query.users.findFirst({
-		where: (users, { or }) => or(eq(users.email, email), eq(users.username, username))
-	});
-
-	if (existingUser) {
-		// User already exists
-		return undefined;
-	}
-
-	const hashedPassword = hash(password);
-
-	const user = await db
-		.insert(users)
-		.values({
-			email,
-			username,
-			password: hashedPassword
-		})
-		.returning({
-			id: users.id
+): Promise<{ userId: User['id']; error: string | null }> => {
+	try {
+		const existingUser = await db.query.users.findFirst({
+			where: (users, { or }) => or(eq(users.email, email), eq(users.username, username))
 		});
 
-	return user[0].id;
+		if (existingUser) {
+			// User already exists
+			return { userId: '', error: 'Username or email already taken' };
+		}
+
+		const hashedPassword = hash(password);
+
+		const user = await db
+			.insert(users)
+			.values({
+				email,
+				username,
+				password: hashedPassword
+			})
+			.returning({
+				id: users.id
+			});
+
+		return {
+			userId: user[0].id,
+			error: null
+		};
+	} catch (e) {
+		console.error(e);
+		return { userId: '', error: 'Failed to connect to database' };
+	}
 };
 
 /**

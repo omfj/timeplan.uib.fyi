@@ -5,7 +5,6 @@
 	import Icon from '@iconify/svelte';
 	import { isOpen } from '$lib/stores/menu';
 	import { navigating } from '$app/stores';
-	import { browser } from '$app/environment';
 
 	const toggleMenu = () => {
 		isOpen.update((state) => !state);
@@ -24,15 +23,19 @@
 	>
 		<div class="flex items-center justify-between">
 			<a href="/">
-				<h1 class="text-3xl font-black py-2">Timeplan</h1>
+				<h1 class="text-3xl font-black py-2 hover:underline">Timeplan</h1>
 			</a>
 
 			<nav class="hidden md:block ml-5">
 				<ul class="flex gap-2">
 					{#if $user}
+						<HeaderItem to="/profile">Min profil</HeaderItem>
 						<li>
 							<form action="/logout" method="POST" use:enhance>
-								<button class="block p-2 rounded hover:bg-gray-100" type="submit">Logg ut</button>
+								<button
+									class="block px-4 py-1 rounded-full border-2 border-black font-bold hover:bg-gray-100"
+									type="submit">Logg ut</button
+								>
 							</form>
 						</li>
 					{:else}

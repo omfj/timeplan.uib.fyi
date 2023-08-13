@@ -16,11 +16,11 @@
 </script>
 
 <div class="bg-white border-2 border-black p-8 rounded-[36px]">
-	<h1 class="text-3xl font-black mb-5">Login</h1>
+	<h1 class="text-3xl font-black mb-5">Logg inn</h1>
 
 	<form class="space-y-4" method="post" use:enhance>
 		<div class="flex flex-col gap-2">
-			<label class="font-extrabold" for="username">Username</label>
+			<label class="font-extrabold" for="username">Brukernavn</label>
 			<input
 				type="text"
 				name="username"
@@ -35,7 +35,7 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<label class="font-extrabold" for="password">Password</label>
+			<label class="font-extrabold" for="password">Passord</label>
 			<input
 				type="password"
 				name="password"
@@ -57,7 +57,7 @@
 
 			<button
 				class="bg-white border-black font-black border-2 rounded-full w-fit py-3 px-8 hover:bg-gray-100"
-				>Lag bruker</button
+				>Har ikke bruker?</button
 			>
 		</div>
 	</form>

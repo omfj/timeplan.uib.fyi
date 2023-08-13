@@ -7,7 +7,8 @@ export default {
 			colors: {
 				foreground: 'var(--foreground)',
 				background: 'var(--background)',
-				border: 'var(--border)'
+				border: 'var(--border)',
+				hover: 'var(--hover)'
 			}
 		}
 	},

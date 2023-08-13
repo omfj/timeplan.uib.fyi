@@ -1,5 +1,34 @@
 import { parse } from 'csv-parse';
 
+const courseMapper = (course: CourseData) => {
+	const startTime = new Date(course.dtstart);
+	const endTime = new Date(course.dtend);
+	const week = Number(course.weeknr);
+	const staffs = course.staffnames
+		.split(',')
+		.map((name) => name.trim())
+		.filter((name) => name !== '');
+	const id = course.id;
+	const party = Number(course.party);
+	const type = course['teaching-method']; // FOR - ØV - GR
+	const room = course.room;
+	const title = course['teaching-title'];
+
+	return {
+		id,
+		title,
+		startTime,
+		endTime,
+		week,
+		staffs,
+		party,
+		type,
+		room
+	};
+};
+
+export type Course = ReturnType<typeof courseMapper>;
+
 export type CourseData = {
 	semesterid: string;
 	courseid: string;
@@ -9,7 +38,6 @@ export type CourseData = {
 	'teaching-title': string;
 	id: string;
 	weeknr: string;
-	teaching_title: string;
 	summary: string;
 	dtstart: string;
 	dtend: string;
@@ -58,7 +86,7 @@ export const getCourse = async (course: string, sem: string, lang: string) => {
 			return text;
 		});
 
-	return new Promise<Array<CourseData>>((resolve, reject) => {
+	const courses = await new Promise<Array<CourseData>>((resolve, reject) => {
 		parse(
 			data,
 			{
@@ -76,4 +104,6 @@ export const getCourse = async (course: string, sem: string, lang: string) => {
 			}
 		);
 	});
+
+	return courses.map(courseMapper);
 };
