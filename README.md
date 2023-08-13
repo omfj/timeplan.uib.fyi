@@ -1,17 +1,22 @@
-# Simple Svelte
+# UiB Timeplan
 
-This is a simple Svelte project that can be used as a template for other projects.
+![](.github/landing-page.png)
 
-Also has a simple self-made auth. Uses (drizzle-orm)[https://github.com/drizzle-team/drizzle-orm] for the database.
+An a more modern and user friendly timetable for the University of Bergen. Alternative frontend for [TP](https://tp.educloud.no/uib/).
 
-## How to use
+## Development
 
-1. Clone the repo
-2. Run `pnpm install`
-3. Run `pnpm db:migrate`
-4. Run `pnpm dev`
-5. Open `localhost:5173` in your browser
-6. Register a new user
-7. Login
-8. ...
-9. Profit!
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/) (v18.x)
+- [pnpm](https://pnpm.io/) (v6.x)
+- [Docker](https://www.docker.com/) (v20.x)
+
+### Setup
+
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Start the database: `docker compose up -d`
+4. Run site in development mode: `pnpm dev`
+
+It should now be running on [localhost:3000](http://localhost:3000/).

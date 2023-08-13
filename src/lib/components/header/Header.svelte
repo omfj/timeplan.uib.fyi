@@ -13,11 +13,16 @@
 	let screenWidth: number;
 
 	$: if ($navigating) $isOpen = false;
+	$: if (screenWidth < 768) $isOpen = false;
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
 
-<div class="p-4 sticky top-0">
+{#if $isOpen}
+	<div class="fixed inset-0 bg-black/20 bg-opacity-50 backdrop-blur-sm z-30" />
+{/if}
+
+<div class="p-4 sticky z-40 top-0">
 	<header
 		class="flex flex-col max-w-4xl w-full mx-auto border-2 border-black rounded-[36px] px-8 py-2 bg-white"
 	>

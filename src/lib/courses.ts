@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const courses = [
 	{
 		id: 'AB201',
