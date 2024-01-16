@@ -69,41 +69,54 @@ export type CourseData = {
 	party: string;
 };
 
+export const createCourseUrl = (course: string, sem: string, lang: string) => {
+	const url = new URL('https://tp.educloud.no/uib/timeplan/excel.php');
+	url.searchParams.append('type', 'course');
+	url.searchParams.append('id[]', `${course.toUpperCase()},1`);
+	url.searchParams.append('sort', 'week');
+	url.searchParams.append('sem', sem);
+	url.searchParams.append('lang', lang);
+
+	return url;
+};
+
 export const getCourse = async (course: string, sem: string, lang: string) => {
-	const url = `https://tp.educloud.no/uib/timeplan/excel.php?type=course&id[]=${course.toUpperCase()}%2C1&sort=week&sem=${sem}&lang=${lang}`;
+	const url = createCourseUrl(course, sem, lang);
 
-	const myHeaders = new Headers();
-	myHeaders.append('Content-Type', 'text/plain; charset=UTF-8');
+	const headers = new Headers();
+	headers.append('Content-Type', 'text/plain; charset=UTF-8');
+	headers.append('User-Agent', 'uib.fyi');
 
-	const data = await fetch(url, {
-		headers: myHeaders
+	return await fetch(url, {
+		headers
 	})
 		.then((response) => response.arrayBuffer())
 		.then((buffer) => {
 			const decoder = new TextDecoder('iso-8859-1');
-			const text = decoder.decode(buffer);
-
-			return text;
+			return decoder.decode(buffer);
 		});
+};
 
-	const courses = await new Promise<Array<CourseData>>((resolve, reject) => {
-		parse(
-			data,
-			{
-				delimiter: ';',
-				columns: true,
-				skip_empty_lines: true,
-				encoding: 'utf-8'
-			},
-			(err, records) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(records);
-				}
-			}
-		);
+export const parseCourse = async (course: string) => {
+	const records = parse(course, {
+		delimiter: ';',
+		columns: true,
+		skip_empty_lines: true
 	});
 
-	return courses.map(courseMapper);
+	return await new Promise<Array<Course>>((resolve, reject) => {
+		const courses: Course[] = [];
+
+		records.on('data', (record) => {
+			courses.push(courseMapper(record));
+		});
+
+		records.on('end', () => {
+			resolve(courses);
+		});
+
+		records.on('error', (error) => {
+			reject(error);
+		});
+	});
 };
