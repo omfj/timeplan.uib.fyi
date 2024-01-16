@@ -4,11 +4,19 @@
 	import { Toaster } from 'svelte-french-toast';
 	import Footer from '$lib/components/footer';
 	import { setUserContext } from '$lib/stores/user.svelte';
+	import { pwaInfo } from 'virtual:pwa-info';
 
 	let { data } = $props();
 
 	setUserContext(data.user);
+
+	let webManifestLink = $derived(pwaInfo ? pwaInfo.webManifest.linkTag : '');
 </script>
+
+<svelte:head>
+	<title>uib.fyi</title>
+	{@html webManifestLink}
+</svelte:head>
 
 <div class="flex flex-col min-h-screen">
 	<Header />

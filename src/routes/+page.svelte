@@ -59,6 +59,13 @@
 					class="w-full z-10 bg-white border-2 border-black absolute rounded-[36px] overflow-hidden"
 					in:fade={{ duration: 100 }}
 					out:fade={{ duration: 100 }}
+					role="listbox"
+					tabindex="0"
+					onkeydown={(e) => {
+						if (e.key === 'Escape') {
+							isOpen = false;
+						}
+					}}
 				>
 					{#if searchResults.length === 0}
 						<p class="text-center py-4 px-8 text-lg font-medium">Fant ingen emner</p>

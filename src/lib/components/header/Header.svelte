@@ -32,7 +32,7 @@
 			<nav class="hidden md:block ml-5">
 				<ul class="flex gap-2">
 					{#if user}
-						<HeaderItem href="/profile">Min profil</HeaderItem>
+						<HeaderItem href="/profil">Min profil</HeaderItem>
 						<li>
 							<HeaderItem href="/api/auth/logout">Logg ut</HeaderItem>
 						</li>

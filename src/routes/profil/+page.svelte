@@ -11,8 +11,8 @@
 		<h2 class="text-xl font-black">Bruker</h2>
 
 		<div>
-			<p class="text-xl"><span class="font-bold">Navn: </span>{user?.name}</p>
-			<p class="text-xl"><span class="font-bold">E-post: </span>{user?.email}</p>
+			<p class="text-xl"><span class="font-bold">Navn:</span> {user?.name}</p>
+			<p class="text-xl"><span class="font-bold">E-post:</span> {user?.email}</p>
 		</div>
 	</div>
 </div>
