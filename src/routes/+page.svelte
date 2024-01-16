@@ -1,49 +1,30 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { getWeek } from '$lib/date';
+	import { getWeek } from 'date-fns';
 	import { courses } from '$lib/courses';
-	import type { ActionData } from './$types';
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { outsideClick } from '$lib/actions/outside-click';
+	import { fade } from 'svelte/transition';
 
-	export let form: ActionData;
+	let { form } = $props();
+	let search = $state('');
+	let isOpen = $state(false);
 
-	let searchInput: HTMLInputElement;
-
-	let search = '';
-
-	let isOpen = false;
-
-	onMount(() => {
-		const clickHandler = (event: MouseEvent) => {
-			if (
-				!searchInput.contains(event.target as Node) &&
-				!searchInput.parentElement?.contains(event.target as Node)
-			) {
-				isOpen = false;
-			}
-		};
-
-		document.addEventListener('click', clickHandler);
-
-		return () => {
-			document.removeEventListener('click', clickHandler);
-		};
-	});
-
-	$: {
+	$effect(() => {
 		if (browser) {
 			isOpen = search.length > 0;
 		}
-	}
+	});
 
-	$: searchResults = courses
-		.filter(
-			(course) =>
-				course.id.toLowerCase().includes(search.toLowerCase()) ||
-				course.name.toLowerCase().includes(search.toLowerCase())
-		)
-		.slice(0, 5);
+	let searchResults = $derived(
+		courses
+			.filter(
+				(course) =>
+					course.id.toLowerCase().includes(search.toLowerCase()) ||
+					course.name.toLowerCase().includes(search.toLowerCase())
+			)
+			.slice(0, 5)
+	);
 </script>
 
 <svelte:head>
@@ -52,7 +33,7 @@
 
 <div class="space-y-4 py-10">
 	<p class="text-center text-2xl font-bold">
-		Uke: {getWeek()}
+		Uke: {getWeek(new Date())}
 	</p>
 
 	<form class="flex flex-col gap-4" method="post" use:enhance>
@@ -64,17 +45,20 @@
 
 		<div class="relative max-w-xl mx-auto space-y-2">
 			<input
-				bind:this={searchInput}
 				class="relative mx-auto w-full text-[min(10vw,60px)] text-center rounded-full border-2 border-black uppercase placeholder:capitalize py-2"
 				type="text"
 				name="code"
 				placeholder="Emnekode..."
+				onfocus={() => (isOpen = true)}
 				bind:value={search}
+				use:outsideClick={() => (isOpen = false)}
 			/>
 
 			{#if isOpen}
 				<div
-					class="w-full z-10 bg-white border-2 border-black rounded-[36px] overflow-hidden"
+					class="w-full z-10 bg-white border-2 border-black absolute rounded-[36px] overflow-hidden"
+					in:fade={{ duration: 100 }}
+					out:fade={{ duration: 100 }}
 				>
 					{#if searchResults.length === 0}
 						<p class="text-center py-4 px-8 text-lg font-medium">Fant ingen emner</p>
@@ -83,7 +67,7 @@
 							{#each searchResults as result}
 								<li>
 									<a
-										class="block py-4 px-8 hover:bg-gray-100 font-medium text-lg hover:underline"
+										class="block py-4 px-8 focus:bg-gray-100 focus:underline hover:bg-gray-100 font-medium text-lg hover:underline"
 										href={`/emne/${result.id}`}
 									>
 										{result.id} - {result.name}

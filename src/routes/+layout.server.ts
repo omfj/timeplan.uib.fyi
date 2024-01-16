@@ -1,8 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = ({ locals }) => {
-	const { user } = locals;
+export const load: LayoutServerLoad = async ({ locals }) => {
 	return {
-		user
+		user: locals.user
 	};
 };

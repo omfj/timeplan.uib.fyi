@@ -1,14 +1,13 @@
-import { DATABASE_URL } from '$env/static/private';
-import pg from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from './schema';
+import { DATABASE_URL, DATABASE_AUTH_TOKEN } from '$env/static/private';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
+import * as schema from './schemas';
 
-const { Pool } = pg;
-
-const pool = new Pool({
-	connectionString: DATABASE_URL
+export const client = createClient({
+	url: DATABASE_URL,
+	authToken: DATABASE_AUTH_TOKEN
 });
 
-export const db = drizzle(pool, {
+export const db = drizzle(client, {
 	schema
 });

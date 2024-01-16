@@ -1,25 +1,20 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { user } from '$lib/stores/user';
 	import HeaderItem from './HeaderItem.svelte';
 	import Icon from '@iconify/svelte';
-	import { isOpen } from '$lib/stores/menu';
-	import { navigating } from '$app/stores';
+	import { createNavMenuStore } from '$lib/stores/menu.svelte';
+	import { getUserContext } from '$lib/stores/user.svelte';
 
-	const toggleMenu = () => {
-		isOpen.update((state) => !state);
-	};
-
-	let screenWidth: number;
-
-	$: if ($navigating) $isOpen = false;
-	$: if (screenWidth < 768) $isOpen = false;
+	let navMenu = createNavMenuStore();
+	let user = getUserContext();
 </script>
 
-<svelte:window bind:innerWidth={screenWidth} />
-
-{#if $isOpen}
-	<div class="fixed inset-0 bg-black/20 bg-opacity-50 backdrop-blur-sm z-30" />
+{#if navMenu.isOpen}
+	<div
+		onclick={() => (navMenu.isOpen = false)}
+		aria-hidden={true}
+		class="fixed inset-0 bg-black/20 bg-opacity-50 backdrop-blur-sm z-30"
+	/>
 {/if}
 
 <div class="p-4 sticky z-40 top-0">
@@ -33,38 +28,37 @@
 
 			<nav class="hidden md:block ml-5">
 				<ul class="flex gap-2">
-					{#if $user}
-						<HeaderItem to="/profile">Min profil</HeaderItem>
+					{#if user}
+						<HeaderItem href="/profile">Min profil</HeaderItem>
 						<li>
-							<form action="/logout" method="POST" use:enhance>
-								<button
-									class="block px-4 py-1 rounded-full border-2 border-black font-bold hover:bg-gray-100"
-									type="submit">Logg ut</button
-								>
-							</form>
+							<HeaderItem href="/api/auth/logout">Logg ut</HeaderItem>
 						</li>
-					{:else}
-						<HeaderItem to="/login">Logg inn</HeaderItem>
-						<HeaderItem to="/register">Registrer deg</HeaderItem>
+					{/if}
+
+					{#if !user}
+						<HeaderItem href="/logg-inn">Logg inn</HeaderItem>
 					{/if}
 				</ul>
 			</nav>
-			<button on:click={toggleMenu} class="block md:hidden border-2 border-black rounded-full p-1">
-				{#if $isOpen}
+			<button
+				onclick={navMenu.toggle}
+				class="block md:hidden border-2 border-black rounded-full p-1"
+			>
+				{#if navMenu.isOpen}
 					<Icon icon="mdi:close" class="w-6 h-6 font-bold" />
 				{:else}
 					<Icon icon="mdi:menu" class="w-6 h-6 font-bold" />
 				{/if}
 			</button>
 		</div>
-		{#if $isOpen}
+		{#if navMenu.isOpen}
 			<nav class="py-4">
 				<ul class="flex flex-col gap-2">
 					<li>
 						<a href="/" class="text-xl font-black hover:underline">Hjem</a>
 					</li>
 
-					{#if !$user}
+					{#if !user}
 						<li>
 							<a href="/login" class="text-xl font-black hover:underline">Logg inn</a>
 						</li>
@@ -73,7 +67,7 @@
 						</li>
 					{/if}
 
-					{#if $user}
+					{#if user}
 						<li>
 							<form action="/logout" method="post" use:enhance>
 								<button class="text-xl font-black hover:underline">Logg ut</button>

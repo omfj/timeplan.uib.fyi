@@ -1,14 +1,13 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '$lib/components/header';
-	import { Toaster } from 'svelte-sonner';
-	import { user } from '$lib/stores/user';
-	import type { LayoutServerData } from './$types';
+	import { Toaster } from 'svelte-french-toast';
 	import Footer from '$lib/components/footer';
+	import { setUserContext } from '$lib/stores/user.svelte';
 
-	export let data: LayoutServerData;
+	let { data } = $props();
 
-	$: user.set(data.user);
+	setUserContext(data.user);
 </script>
 
 <div class="flex flex-col min-h-screen">

@@ -1,28 +1,39 @@
-import { getUserBySessionId, validateSession } from '$lib/db/queries';
+import { lucia } from '$lib/auth/lucia';
+import { db } from '$lib/db/drizzle';
+import { users } from '$lib/db/schemas';
 import type { Handle } from '@sveltejs/kit';
+import { eq } from 'drizzle-orm';
 
-export const handle = (async ({ event, resolve }) => {
-	// Get the session ID from the cookies
-	const sessionId = event.cookies.get('session');
+export const handle: Handle = async ({ event, resolve }) => {
+	const sessionId = event.cookies.get(lucia.sessionCookieName);
 
-	// If there is a session ID, get the user from the backend
-	if (sessionId) {
-		const validSesssion = await validateSession(sessionId);
-
-		// If the session is invalid, delete the session cookie
-		if (!validSesssion) {
-			event.locals.user = undefined;
-		} else {
-			event.locals.user = await getUserBySessionId(sessionId);
-		}
+	if (!sessionId) {
+		event.locals.user = null;
+		return resolve(event);
 	}
 
-	// If there is no session ID, delete the session cookie
-	if (!event.locals.user) event.cookies.delete('session');
+	const { session, user } = await lucia.validateSession(sessionId);
 
-	// Everything above is run before the route/api/page is resolved
-	const response = await resolve(event);
-	// Everything below is run after the route/api/page is resolved
+	if (session && session.fresh) {
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		event.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	}
 
-	return response;
-}) satisfies Handle;
+	if (!session) {
+		const sessionCookie = lucia.createBlankSessionCookie();
+		event.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	}
+
+	if (user?.id) {
+		const u =
+			(await db.query.users.findFirst({
+				where: () => eq(users.id, user.id)
+			})) ?? null;
+
+		event.locals.user = u;
+	} else {
+		event.locals.user = null;
+	}
+
+	return resolve(event);
+};
