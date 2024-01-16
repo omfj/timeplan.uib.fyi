@@ -8,7 +8,7 @@ export const actions = {
 		const code = formData.get('code');
 
 		if (code) {
-			throw redirect(301, `/emne/${code.toString().toUpperCase()}`);
+			redirect(301, `/emne/${code.toString().toUpperCase()}`);
 		}
 
 		return fail(400, {

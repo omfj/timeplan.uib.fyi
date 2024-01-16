@@ -2,7 +2,7 @@ import type { Course } from './services/get-course';
 
 type Strategy = 'week';
 
-export const formatCourse = (course: Array<Course>, strategy: Strategy) => {
+export const groupCourseBy = (course: Array<Course>, strategy: Strategy) => {
 	if (strategy === 'week') {
 		return formatCourseWeek(course);
 	}
