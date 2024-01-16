@@ -23,7 +23,10 @@
 	>
 		<div class="flex items-center justify-between">
 			<a href="/">
-				<h1 class="text-3xl font-black py-2 hover:underline">Timeplan</h1>
+				<h1 class="text-3xl font-semibold py-2 hover:underline">
+					<span class="font-serif">UiB</span>
+					<span class="text-lg font-mono italic">fyi</span>
+				</h1>
 			</a>
 
 			<nav class="hidden md:block ml-5">
