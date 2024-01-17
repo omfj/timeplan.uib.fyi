@@ -1,6 +1,17 @@
 import { parse } from 'csv-parse';
 
+const isValidSemesterId = (semesterId: string) => {
+	const year = Number(semesterId.slice(0, 2));
+	const semester = semesterId.slice(2, 3);
+
+	return (!isNaN(year) && semester === 'h') || semester === 'v';
+};
+
 const courseMapper = (course: CourseData) => {
+	if (!isValidSemesterId(course.semesterid)) {
+		return;
+	}
+
 	const startTime = new Date(course.dtstart);
 	const endTime = new Date(course.dtend);
 	const week = Number(course.weeknr);
@@ -101,22 +112,26 @@ export const parseCourse = async (course: string) => {
 	const records = parse(course, {
 		delimiter: ';',
 		columns: true,
-		skip_empty_lines: true
+		skipRecordsWithEmptyValues: true,
+		skipEmptyLines: true,
+		relaxColumnCountLess: true
 	});
 
-	return await new Promise<Array<Course>>((resolve, reject) => {
-		const courses: Course[] = [];
+	const foo = await new Promise<Array<unknown>>((resolve, reject) => {
+		const lines: Array<unknown> = [];
 
 		records.on('data', (record) => {
-			courses.push(courseMapper(record));
+			lines.push(record);
 		});
 
 		records.on('end', () => {
-			resolve(courses);
+			resolve(lines);
 		});
 
 		records.on('error', (error) => {
 			reject(error);
 		});
 	});
+
+	return foo.map((line) => courseMapper(line as CourseData)).filter(Boolean);
 };
