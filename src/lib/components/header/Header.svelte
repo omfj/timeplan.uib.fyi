@@ -17,10 +17,8 @@
 	/>
 {/if}
 
-<div class="p-4 sticky z-40 top-0">
-	<header
-		class="flex flex-col max-w-4xl w-full mx-auto border-2 border-black rounded-[36px] px-8 py-2 bg-white"
-	>
+<div class="py-4 px-2 max-w-4xl w-full mx-auto sticky z-40 top-0">
+	<header class="flex flex-col px-8 border-2 border-black rounded-[36px] py-2 bg-white">
 		<div class="flex items-center justify-between">
 			<a href="/">
 				<h1 class="text-3xl font-semibold py-2 hover:underline">

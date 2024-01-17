@@ -32,7 +32,7 @@
 </svelte:head>
 
 <div class="space-y-4 py-10">
-	<p class="text-center text-2xl font-bold">
+	<p class="text-center text-4xl font-bold">
 		Uke: {getWeek(new Date())}
 	</p>
 
