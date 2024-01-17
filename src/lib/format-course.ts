@@ -12,17 +12,18 @@ export const groupCourseBy = (course: Array<Course>, strategy: Strategy) => {
 };
 
 const formatCourseWeek = (course: Array<Course>) => {
-	const weeks: Record<string, Array<Course>> = {};
+	return course.reduce(
+		(acc, c) => {
+			const week = c!.week;
 
-	course.forEach((c) => {
-		const week = c.week;
+			if (!acc[week]) {
+				acc[week] = [];
+			}
 
-		if (!weeks[week]) {
-			weeks[week] = [];
-		}
+			acc[week]!.push(c);
 
-		weeks[week]?.push(c);
-	});
-
-	return weeks;
+			return acc;
+		},
+		{} as Record<string, Array<Course>>
+	);
 };

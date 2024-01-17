@@ -117,8 +117,8 @@ export const parseCourse = async (course: string) => {
 		relaxColumnCountLess: true
 	});
 
-	const foo = await new Promise<Array<unknown>>((resolve, reject) => {
-		const lines: Array<unknown> = [];
+	const foo = await new Promise<Array<CourseData>>((resolve, reject) => {
+		const lines: Array<CourseData> = [];
 
 		records.on('data', (record) => {
 			lines.push(record);
@@ -133,5 +133,5 @@ export const parseCourse = async (course: string) => {
 		});
 	});
 
-	return foo.map((line) => courseMapper(line as CourseData)).filter(Boolean);
+	return foo.map((line) => courseMapper(line)).filter(Boolean);
 };

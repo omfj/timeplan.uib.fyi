@@ -4,7 +4,6 @@
 	import { formatFromTo } from '$lib/date';
 	import { groupCourseBy } from '$lib/format-course.js';
 	import { unique } from '$lib/utils';
-	import { getWeek } from 'date-fns';
 
 	let { data } = $props();
 
@@ -75,7 +74,7 @@
 				{#each events as event}
 					<li class="py-2">
 						<h3 class="text-xl font-medium">{event.title}</h3>
-						<p>Tid: {formatFromTo(event.startTime, event.endTime)}</p>
+						<p>Når: {formatFromTo(event.startTime, event.endTime)}</p>
 						<p>Rom: {event['room']}</p>
 
 						{#if event.staffs.length > 0}
