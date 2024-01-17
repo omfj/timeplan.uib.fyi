@@ -1,30 +1,35 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { getWeek } from 'date-fns';
-	import { courses } from '$lib/courses';
-	import { browser } from '$app/environment';
 	import { outsideClick } from '$lib/actions/outside-click';
 	import { fade } from 'svelte/transition';
+	import { debounce } from '$lib/utils';
+	import { fetchCourses } from '$lib/api/courses.js';
+	import type { Course } from '$lib/db/schemas';
+	import { onDestroy } from 'svelte';
 
 	let { form } = $props();
-	let search = $state('');
+
+	let searchResults = $state<Array<Course>>([]);
 	let isOpen = $state(false);
+	let searchTerm = $state('');
+	let controller = $state<AbortController | null>(null);
 
-	$effect(() => {
-		if (browser) {
-			isOpen = search.length > 0;
+	const searchCourses = debounce(async (search: string) => {
+		if (search.length < 2) {
+			searchResults = [];
+			return;
 		}
-	});
+		const data = await fetchCourses(search, {
+			signal: controller?.signal
+		});
 
-	let searchResults = $derived(
-		courses
-			.filter(
-				(course) =>
-					course.id.toLowerCase().includes(search.toLowerCase()) ||
-					course.name.toLowerCase().includes(search.toLowerCase())
-			)
-			.slice(0, 5)
-	);
+		searchResults = data;
+	}, 300);
+
+	onDestroy(() => {
+		controller?.abort();
+	});
 </script>
 
 <svelte:head>
@@ -50,7 +55,22 @@
 				name="code"
 				placeholder="Emnekode..."
 				onfocus={() => (isOpen = true)}
-				bind:value={search}
+				bind:value={searchTerm}
+				oninput={(e) => {
+					isOpen = true;
+
+					if (controller) {
+						controller.abort('Aborting previous search');
+					}
+
+					controller = new AbortController();
+					searchCourses(e.currentTarget.value);
+				}}
+				onkeydown={(e) => {
+					if (e.key === 'Escape') {
+						isOpen = false;
+					}
+				}}
 				use:outsideClick={() => (isOpen = false)}
 			/>
 
@@ -68,7 +88,11 @@
 					}}
 				>
 					{#if searchResults.length === 0}
-						<p class="text-center py-4 px-8 text-lg font-medium">Fant ingen emner</p>
+						{#if searchTerm.length > 1}
+							<p class="text-center py-4 px-8 text-lg font-medium">Fant ingen emner</p>
+						{:else}
+							<p class="text-center py-4 px-8 text-lg font-medium">Søk på emnekode eller navn</p>
+						{/if}
 					{:else}
 						<ul>
 							{#each searchResults as result}

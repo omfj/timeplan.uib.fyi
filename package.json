@@ -16,6 +16,7 @@
 		"db:generate": "drizzle-kit generate:sqlite",
 		"db:migrate": "pnpm run-ts ./drizzle/migrate.ts",
 		"db:seed": "pnpm run-ts ./drizzle/seed.ts",
+		"db:update-courses": "pnpm run-ts ./drizzle/update-courses.ts",
 		"db:studio": "drizzle-kit studio",
 		"docker:up": "docker-compose up -d",
 		"docker:down": "docker-compose down",
