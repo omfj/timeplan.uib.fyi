@@ -5,12 +5,11 @@
 	import { fade } from 'svelte/transition';
 	import { debounce } from '$lib/utils';
 	import { fetchCourses } from '$lib/api/courses.js';
-	import type { Course } from '$lib/db/schemas';
 	import { onDestroy } from 'svelte';
 
 	let { form } = $props();
 
-	let searchResults = $state<Array<Course>>([]);
+	let searchResults = $state<Awaited<ReturnType<typeof fetchCourses>>>([]);
 	let isOpen = $state(false);
 	let searchTerm = $state('');
 	let controller = $state<AbortController | null>(null);

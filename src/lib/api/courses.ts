@@ -8,5 +8,10 @@ export const fetchCourses = async (searchTerm: string, options?: RequestInit) =>
 			'Content-Type': 'application/json'
 		}
 	});
-	return res.json() as Promise<Array<Course>>;
+	return res.json() as Promise<
+		Array<{
+			id: Course['id'];
+			name: Course['name'];
+		}>
+	>;
 };
