@@ -1,5 +1,4 @@
 import { format, isSameDay } from 'date-fns';
-import { nb } from 'date-fns/locale';
 
 export const { format: formatDate } = Intl.DateTimeFormat('no-NB', {
 	weekday: 'long',
@@ -10,11 +9,7 @@ export const { format: formatDate } = Intl.DateTimeFormat('no-NB', {
 	minute: 'numeric'
 });
 
-export const time = (date: Date) =>
-	format(date, 'HH:mm', {
-		locale: nb
-	});
-
+export const time = (date: Date) => format(date, 'HH:mm');
 export const date = (date: Date) => format(date, 'dd.MM.yyyy');
 
 export const getYearAndSemester = (date: Date) => {
@@ -23,20 +18,11 @@ export const getYearAndSemester = (date: Date) => {
 	return `${year}${semester}`;
 };
 
-export const toOsloTime = (date: Date | string | number): Date =>
-	new Date(
-		new Date(date).toLocaleString('en-US', {
-			timeZone: 'Europe/Oslo'
-		})
-	);
-
 export const formatFromTo = (from: Date, to: Date) => {
-	const fromTime = toOsloTime(from);
-	const toTime = toOsloTime(to);
-
-	if (isSameDay(fromTime, toTime)) {
-		return `${date(fromTime)}, kl ${time(fromTime)} - ${time(toTime)}`;
+	console.log(from);
+	if (isSameDay(from, to)) {
+		return `${date(from)}, kl ${time(from)} - ${time(to)}`;
 	}
 
-	return `${formatDate(fromTime)} - ${formatDate(toTime)}`;
+	return `${formatDate(from)} - ${formatDate(to)}`;
 };
