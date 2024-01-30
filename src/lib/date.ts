@@ -1,19 +1,40 @@
 import { isSameDay } from 'date-fns';
-import { DateTime } from 'luxon';
 
-export const formatDate = (date: Date | string | number) => {
+type Dateable = Date | string | number;
+
+export const formatDate = (date: Dateable) => {
 	const d = new Date(date);
-	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('dd. MMMM yyyy, HH:mm');
+	d.setHours(d.getHours() - 1);
+
+	return d.toLocaleDateString('no-NB', {
+		weekday: 'long',
+		day: 'numeric',
+		month: 'long',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric'
+	});
 };
 
-export const time = (date: Date | string | number) => {
+export const time = (date: Dateable) => {
 	const d = new Date(date);
-	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('HH:mm');
+	d.setHours(d.getHours() - 1);
+
+	return d.toLocaleTimeString('no-NB', {
+		hour: 'numeric',
+		minute: 'numeric'
+	});
 };
 
-export const date = (date: Date | string | number) => {
+export const date = (date: Dateable) => {
 	const d = new Date(date);
-	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('EEEE dd. MMMM');
+	d.setHours(d.getHours() - 1);
+
+	return d.toLocaleDateString('no-NB', {
+		weekday: 'short',
+		day: 'numeric',
+		month: 'long'
+	});
 };
 export const getYearAndSemester = (date: Date) => {
 	const year = `${date.getFullYear()}`.slice(2);
@@ -21,7 +42,7 @@ export const getYearAndSemester = (date: Date) => {
 	return `${year}${semester}`;
 };
 
-export const formatFromTo = (from: Date, to: Date) => {
+export const formatFromTo = (from: Dateable, to: Dateable) => {
 	if (isSameDay(from, to)) {
 		return `${date(from)}, kl ${time(from)} - ${time(to)}`;
 	}
