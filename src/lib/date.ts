@@ -1,35 +1,19 @@
 import { isSameDay } from 'date-fns';
+import { DateTime } from 'luxon';
 
 export const formatDate = (date: Date | string | number) => {
 	const d = new Date(date);
-
-	return d.toLocaleDateString('no-NB', {
-		weekday: 'long',
-		day: 'numeric',
-		month: 'long',
-		year: 'numeric',
-		hour: 'numeric',
-		minute: 'numeric'
-	});
+	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('dd. MMMM yyyy, HH:mm');
 };
 
 export const time = (date: Date | string | number) => {
 	const d = new Date(date);
-
-	return d.toLocaleTimeString('no-NB', {
-		hour: 'numeric',
-		minute: 'numeric'
-	});
+	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('HH:mm');
 };
 
 export const date = (date: Date | string | number) => {
 	const d = new Date(date);
-
-	return d.toLocaleDateString('no-NB', {
-		weekday: 'short',
-		day: 'numeric',
-		month: 'long'
-	});
+	return DateTime.fromJSDate(d, { zone: 'Europe/Oslo' }).toFormat('EEEE dd. MMMM');
 };
 export const getYearAndSemester = (date: Date) => {
 	const year = `${date.getFullYear()}`.slice(2);
