@@ -4,6 +4,7 @@
 	import { formatFromTo } from '$lib/date';
 	import { groupCourseBy } from '$lib/format-course.js';
 	import { unique } from '$lib/utils';
+	import { getWeek } from 'date-fns';
 
 	let { data } = $props();
 
@@ -12,7 +13,7 @@
 	let titles = unique(data.course.map((event) => event.title));
 
 	let filteredTitles = $state(titles);
-	let showFromWeek = $state(1);
+	let showFromWeek = $state(getWeek(new Date()));
 </script>
 
 <svelte:head>
@@ -59,13 +60,25 @@
 				</button>
 			{/each}
 		</div>
+
+		<div class="flex flex-row items-center gap-2">
+			<label for="showFromWeek">Vis fra uke:</label>
+			<input
+				type="number"
+				id="showFromWeek"
+				min="1"
+				max="52"
+				bind:value={showFromWeek}
+				class="border-2 border-black rounded-md p-1"
+			/>
+		</div>
 	{/if}
 
 	<div>
 		{#each Object.keys(weeks) as week}
-			{@const events = weeks[week].filter(
-				(event) => filteredTitles.includes(event.title) && event.week >= showFromWeek
-			)}
+			{@const events = weeks[week]
+				.filter(Boolean)
+				.filter((event) => filteredTitles.includes(event.title) && event.week >= showFromWeek)}
 			{#if events.length > 0}
 				<h2 class="text-2xl font-medium my-3 underline">Uke {week}</h2>
 			{/if}
