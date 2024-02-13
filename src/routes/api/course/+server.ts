@@ -1,8 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/db/drizzle';
-import { sql } from 'drizzle-orm';
-import { courses } from '$lib/db/schemas';
+import { courses } from './courses';
 
 export const GET: RequestHandler = async ({ url }) => {
 	const searchTerm = url.searchParams.get('q');
@@ -11,23 +9,12 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json([]);
 	}
 
-	const filteredCourses = await db
-		.select({
-			id: courses.id,
-			name: courses.name
+	const filteredCourses = courses
+		.filter((course) => {
+			const search = searchTerm.toLowerCase();
+			return course.id.toLowerCase().includes(search) || course.name.toLowerCase().includes(search);
 		})
-		.from(courses)
-		.where(
-			sql.join(
-				[
-					sql`lower(${courses.name}) like ${`${searchTerm.toLowerCase()}%`}`,
-					sql`OR`,
-					sql`lower(${courses.id}) like ${`${searchTerm.toLowerCase()}%`}`
-				],
-				sql` `
-			)
-		)
-		.limit(5);
+		.slice(0, 5);
 
 	return json(filteredCourses);
 };
