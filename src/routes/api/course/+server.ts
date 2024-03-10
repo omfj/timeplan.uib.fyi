@@ -2,6 +2,8 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { courses } from './courses';
 
+export const prerender = true;
+
 export const GET: RequestHandler = async ({ url }) => {
 	const searchTerm = url.searchParams.get('q');
 
