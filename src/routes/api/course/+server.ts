@@ -1,22 +1,10 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { courses } from './courses';
+import { json } from '@sveltejs/kit';
+import { search } from '$lib/courses/data';
 
-export const prerender = true;
+export function GET({ url }) {
+	const query = url.searchParams.get('q');
+	const results = search(courses, query);
 
-export const GET: RequestHandler = async ({ url }) => {
-	const searchTerm = url.searchParams.get('q');
-
-	if (!searchTerm) {
-		return json([]);
-	}
-
-	const filteredCourses = courses
-		.filter((course) => {
-			const search = searchTerm.toLowerCase();
-			return course.id.toLowerCase().includes(search) || course.name.toLowerCase().includes(search);
-		})
-		.slice(0, 5);
-
-	return json(filteredCourses);
-};
+	return json(results);
+}
