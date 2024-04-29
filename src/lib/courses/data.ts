@@ -44,15 +44,15 @@ if (browser) {
 	});
 }
 
-export function search(movies: Array<Course>, query: string | null) {
+export function search(courses: Array<Course>, query: string | null) {
 	const results: Array<Course> = [];
 	if (!query) return results;
 
 	const q = query.toLowerCase().trim();
 
-	for (const movie of movies) {
-		if (movie.name.toLowerCase().includes(q) || movie.id.toLowerCase().includes(q)) {
-			results.push(movie);
+	for (const course of courses) {
+		if (course.name.toLowerCase().includes(q) || course.id.toLowerCase().includes(q)) {
+			results.push(course);
 
 			if (results.length === 200) break;
 		}
