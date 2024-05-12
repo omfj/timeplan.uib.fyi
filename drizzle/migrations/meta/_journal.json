@@ -1,19 +1,12 @@
 {
-  "version": "5",
-  "dialect": "pg",
+  "version": "6",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1705417433177,
-      "tag": "0000_lush_dormammu",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1705513579910,
-      "tag": "0001_brave_wrecker",
+      "version": "6",
+      "when": 1715518107990,
+      "tag": "0000_complete_sentinels",
       "breakpoints": true
     }
   ]

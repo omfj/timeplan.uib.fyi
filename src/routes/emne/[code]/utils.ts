@@ -1,7 +1,7 @@
 import type { Course } from '$lib/services/get-course';
 
 export const getGroupNumber = (group: Course) => {
-	if (group.type === 'GR') {
+	if (group?.type === 'GR') {
 		return group.party;
 	}
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import HeaderItem from './HeaderItem.svelte';
-	import Icon from '@iconify/svelte';
+	import { Menu, X } from 'lucide-svelte';
 	import { createNavMenuStore } from '$lib/stores/menu.svelte';
 	import { getUserContext } from '$lib/stores/user.svelte';
 
@@ -14,7 +14,7 @@
 		onclick={() => (navMenu.isOpen = false)}
 		aria-hidden={true}
 		class="fixed inset-0 bg-black/20 bg-opacity-50 backdrop-blur-sm z-30"
-	/>
+	></div>
 {/if}
 
 <div class="py-4 px-2 max-w-4xl w-full mx-auto sticky z-40 top-0">
@@ -32,7 +32,7 @@
 					{#if user}
 						<HeaderItem href="/profil">Min profil</HeaderItem>
 						<li>
-							<HeaderItem href="/api/auth/logout">Logg ut</HeaderItem>
+							<HeaderItem href="/auth/logout">Logg ut</HeaderItem>
 						</li>
 					{/if}
 
@@ -46,9 +46,9 @@
 				class="block md:hidden border-2 border-black rounded-full p-1"
 			>
 				{#if navMenu.isOpen}
-					<Icon icon="mdi:close" class="w-6 h-6 font-bold" />
+					<X class="w-6 h-6 font-bold" />
 				{:else}
-					<Icon icon="mdi:menu" class="w-6 h-6 font-bold" />
+					<Menu class="w-6 h-6 font-bold" />
 				{/if}
 			</button>
 		</div>

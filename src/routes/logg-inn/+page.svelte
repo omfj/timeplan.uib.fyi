@@ -5,7 +5,7 @@
 		<li>
 			<a
 				class="bg-white rounded-full px-6 py-2 border-2 border-border font-bold hover:bg-gray-100"
-				href="/api/auth/feide">Feide</a
+				href="/auth/github">GitHub</a
 			>
 		</li>
 	</ul>

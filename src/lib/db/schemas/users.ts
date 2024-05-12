@@ -2,18 +2,11 @@ import { sqliteTable, text, primaryKey, uniqueIndex } from 'drizzle-orm/sqlite-c
 import { relations } from 'drizzle-orm';
 import { accounts, sessions } from '.';
 
-export const users = sqliteTable(
-	'user',
-	{
-		id: text('id').notNull(),
-		name: text('name'),
-		email: text('email')
-	},
-	(t) => ({
-		pk: primaryKey({ columns: [t.id] }),
-		uniqueEmailIdx: uniqueIndex('unique_email_idx').on(t.email)
-	})
-);
+export const users = sqliteTable('user', {
+	id: text('id').notNull().primaryKey(),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique()
+});
 
 export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),

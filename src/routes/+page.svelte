@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>Timeplan</title>
+	<title>Timeplan | uib.fyi</title>
 </svelte:head>
 
 <div class="space-y-4 py-10">

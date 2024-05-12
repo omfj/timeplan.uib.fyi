@@ -3,14 +3,23 @@ import { db } from '$lib/db/drizzle';
 import { users } from '$lib/db/schemas';
 import { OAuth2RequestError } from 'arctic';
 import { and, eq } from 'drizzle-orm';
-import { generateId } from 'lucia';
 import type { RequestHandler } from './$types';
-import { feideAuth, getFeideUser } from '$lib/auth/providers/feide';
+import { nanoid } from 'nanoid';
 import { accounts } from '$lib/db/schemas/accounts';
+import { getProivderUser, getProvider } from '$lib/auth/provider';
 
-export const GET: RequestHandler = async ({ cookies, url }) => {
+export const GET: RequestHandler = async ({ cookies, url, params }) => {
+	const provider = getProvider(params.provider);
+	if (!provider) {
+		console.log('Provider does not exist:', params.provider);
+
+		return new Response(`Provider with name, ${params.provider}, does not exist.`, {
+			status: 404,
+			statusText: 'Provider does not exist.'
+		});
+	}
+
 	const stateCookie = cookies.get('oauth_state');
-
 	const state = url.searchParams.get('state');
 	const code = url.searchParams.get('code');
 
@@ -27,15 +36,20 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 	}
 
 	try {
-		const tokens = await feideAuth.validateAuthorizationCode(code);
+		const tokens = await provider.client.validateAuthorizationCode(code);
 
-		const feideUser = await getFeideUser(tokens.accessToken);
+		const providerUser = await getProivderUser(provider.name, tokens.accessToken);
 
 		const existingUser = await db
 			.select()
 			.from(users)
 			.leftJoin(accounts, eq(users.id, accounts.userId))
-			.where(and(eq(accounts.provider, 'feide'), eq(accounts.providerAccountId, feideUser.id)))
+			.where(
+				and(
+					eq(accounts.provider, params.provider),
+					eq(accounts.providerAccountId, String(providerUser.id))
+				)
+			)
 			.then((res) => res[0] ?? null);
 
 		if (existingUser) {
@@ -50,24 +64,18 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 			});
 		}
 
-		const userId = generateId(15);
+		const userId = nanoid(15);
 		await db.transaction(async (tx) => {
 			await tx.insert(users).values({
 				id: userId,
-				name: feideUser.name,
-				email: feideUser.email
+				name: providerUser.name ?? providerUser.login,
+				email: providerUser.email
 			});
 
 			await tx.insert(accounts).values({
-				provider: 'feide',
-				providerAccountId: feideUser.id,
-				userId,
-				accessToken: tokens.accessToken,
-				refreshToken: null,
-				expiresAt: Math.floor(tokens.expiresAt),
-				scope: tokens.scope,
-				tokenType: tokens.tokenType,
-				idToken: tokens.idToken
+				provider: provider.name,
+				providerAccountId: String(providerUser.id),
+				userId
 			});
 		});
 

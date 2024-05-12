@@ -3,10 +3,10 @@
 
 	type Props = {
 		href: string;
-		children: Snippet<void>;
+		children: Snippet;
 	};
 
-	let { href, children } = $props<Props>();
+	let { href, children }: Props = $props();
 </script>
 
 <li>
