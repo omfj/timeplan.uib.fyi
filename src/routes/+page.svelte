@@ -6,6 +6,7 @@
 	import { debounce } from '$lib/utils';
 	import { fetchCourses } from '$lib/api/courses.js';
 	import { onDestroy } from 'svelte';
+	import { semyearFromDate } from '$lib/date.js';
 
 	let { form } = $props();
 
@@ -19,9 +20,7 @@
 			searchResults = [];
 			return;
 		}
-		const data = await fetchCourses(search, {
-			signal: controller?.signal
-		});
+		const data = await fetchCourses(search);
 
 		searchResults = data;
 	}, 300);
@@ -98,7 +97,7 @@
 								<li>
 									<a
 										class="block py-4 px-8 focus:bg-gray-100 focus:underline hover:bg-gray-100 font-medium text-lg hover:underline"
-										href={`/emne/${result.id}`}
+										href={`/emne/${semyearFromDate(new Date())}/${result.id}`}
 									>
 										{result.id} - {result.name}
 									</a>

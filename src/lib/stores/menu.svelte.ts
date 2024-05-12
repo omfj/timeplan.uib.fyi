@@ -12,6 +12,8 @@ export function createNavMenuStore() {
 			windowWidth = window.innerWidth;
 		};
 
+		onResize();
+
 		window.addEventListener('resize', onResize);
 
 		return () => {

@@ -36,10 +36,25 @@ export const date = (date: Dateable) => {
 		month: 'long'
 	});
 };
-export const getYearAndSemester = (date: Date) => {
+export const semyearFromDate = (date: Date) => {
 	const year = `${date.getFullYear()}`.slice(2);
 	const semester = date.getMonth() < 6 ? 'v' : 'h';
 	return `${year}${semester}`;
+};
+
+export const validateSemyear = (semyear: string) => {
+	const year = semyear.slice(0, 2);
+	const semester = semyear.slice(2);
+
+	if (year.length !== 2 || semester.length !== 1) {
+		return false;
+	}
+
+	if (semester !== 'v' && semester !== 'h') {
+		return false;
+	}
+
+	return true;
 };
 
 export const formatFromTo = (from: Dateable, to: Dateable) => {

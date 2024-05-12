@@ -3,11 +3,14 @@
 	import Header from '$lib/components/header';
 	import Footer from '$lib/components/footer';
 	import { setUserContext } from '$lib/stores/user.svelte';
+	import { Toaster } from 'svelte-sonner';
 
 	let { data, children } = $props();
 
 	setUserContext(data.user);
 </script>
+
+<Toaster />
 
 <div class="flex flex-col min-h-screen">
 	<Header />
