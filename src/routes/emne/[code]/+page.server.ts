@@ -8,11 +8,12 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	const semesterYear = getYearAndSemester(new Date());
 	const course = await getCourse(code, semesterYear, 'no');
-	const parsedCourse = await parseCourse(course);
 
 	if (course.length === 0) {
-		throw error(404, 'Finner ikke emnet.');
+		error(404, 'Finner ikke emnet.');
 	}
+
+	const parsedCourse = await parseCourse(course);
 
 	return {
 		course: parsedCourse
